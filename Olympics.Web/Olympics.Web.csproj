@@ -1,0 +1,61 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="Resources\Pages\Index.en-US.json" />
+    <Content Remove="Resources\Pages\Index.fr-FR.json" />
+    <Content Remove="Resources\Pages\Medals - Copy.en-US.json" />
+    <Content Remove="Resources\Pages\Medals - Copy.fr-FR.json" />
+    <Content Remove="Resources\Pages\Medals.en-US.json" />
+    <Content Remove="Resources\Pages\Medals.fr-FR.json" />
+    <Content Remove="Resources\Pages\Sports.en-US.json" />
+    <Content Remove="Resources\Pages\Sports.fr-FR.json" />
+    <Content Remove="Resources\Shared\NavMenu.en-US.json" />
+    <Content Remove="Resources\Shared\NavMenu.fr-FR.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Components\TextFilter.en-US.json" />
+    <EmbeddedResource Include="Resources\Components\TextFilter.fr-FR.json" />
+    <EmbeddedResource Include="Resources\Pages\Medals.fr-FR.json" />
+    <EmbeddedResource Include="Resources\Pages\Medals.en-US.json" />
+    <EmbeddedResource Include="Resources\Pages\Sports.en-US.json" />
+    <EmbeddedResource Include="Resources\Pages\Sports.fr-FR.json" />
+    <EmbeddedResource Include="Resources\Pages\Index.en-US.json" />
+    <EmbeddedResource Include="Resources\Pages\Index.fr-FR.json" />
+    <EmbeddedResource Include="Resources\Shared\NavMenu.en-US.json" />
+    <EmbeddedResource Include="Resources\Shared\NavMenu.fr-FR.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Blazor.Bootstrap" Version="3.0.0-preview.3" />
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.8" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="SoloX.BlazorJsonLocalization" Version="2.0.8" />
+    <PackageReference Include="SoloX.BlazorJsonLocalization.ServerSide" Version="2.0.8" />
+    <PackageReference Include="SoloX.BlazorJsonLocalization.WebAssembly" Version="2.0.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\data\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Olympics.Core\Olympics.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\data\data.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\data\data2.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,29 @@
+﻿@inject NavigationManager Navigation
+@using System.Globalization
+
+<div>
+    <select class="form-select" @bind="Culture">
+        <option value="en-US">English</option>
+        <option value="fr-FR">Français</option>
+    </select>
+</div>
+
+@code {
+    protected override void OnInitialized() {
+        Culture = CultureInfo.CurrentCulture;
+    }
+
+    private CultureInfo Culture {
+        get {
+            return CultureInfo.CurrentCulture;
+        }
+        set {
+            if (CultureInfo.CurrentCulture != value) {
+                var uri = new Uri(Navigation.Uri).GetComponents(UriComponents.PathAndQuery, UriFormat.Unescaped);
+                var culture = Uri.EscapeDataString(value.Name);
+                var uriLink = Uri.EscapeDataString(uri);
+                Navigation.NavigateTo($"Culture/Set?culture={culture}&redirectUri={uriLink}", forceLoad: true);
+            }
+        }
+    }
+}

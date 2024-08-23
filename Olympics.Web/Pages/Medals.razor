@@ -1,0 +1,113 @@
+﻿@page "/medals"
+@using Olympics.Core.Entities
+@using Olympics.Web.Data
+@inject MedalDataService MedalsDataService
+@inject IStringLocalizer<Medals> localizer
+@inject HttpClient Http
+@inject IMedalFilters Filters
+
+<PageTitle>@localizer["Title"]</PageTitle>
+
+<h1>@localizer["Title"]</h1>
+
+@if (medalList == null) {
+    <p><em>@localizer["Loading"]</em></p>
+}
+else
+{
+    <GridWrapper @ref="Wrapper" FilterChanged="ReloadAsync">
+        <div class="col-8"><TextFilter /></div>
+        <br>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>@localizer["Season"]</th>
+                    <th>@localizer["Year"]</th>
+                    <th>@localizer["Sport"]</th>
+                    <th>@localizer["Competition"]</th>
+                    <th>@localizer["Name"]</th>
+                    <th>@localizer["Rank"]</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var medal in medalListFiltered) {
+                    <tr>
+                        <td>@medal.Season</td>
+                        <td>@medal.Year</td>
+                        <td>@medal.Sport</td>
+                        <td>@medal.Competition</td>
+                        <td>
+                            @foreach (var name in medal.Names) {
+                                <span>@name</span>
+                                <br>
+                            }
+                        </td>
+                        <td>@medal.Rank</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </GridWrapper>
+}
+
+@code {
+    private GridWrapper Wrapper { get; set; } = new GridWrapper();
+
+    private List<MedalData> medalList;
+    private List<MedalData> medalListFiltered;
+
+    protected override async Task OnInitializedAsync() {
+        medalList = await MedalsDataService.GetMedals();
+        medalListFiltered = medalList;
+    }
+
+    private async Task ReloadAsync() {
+        if (Filters.Loading) {
+            return;
+        }
+        Filters.Loading = true;
+        Thread.Sleep(300);
+
+        if (Filters.FilterText == "") {
+            medalListFiltered = medalList;
+        }
+        if (Filters.FilterColumn == MedalFilterColumns.Season && Filters.FilterText != "") {
+            try {
+                medalListFiltered = medalList.Where(x => x.Season == (Season)Enum.Parse(typeof(Season), Filters.FilterText.ToLower(), true)).ToList();
+            }
+            catch { }
+        }
+        if (Filters.FilterColumn == MedalFilterColumns.Rank && Filters.FilterText != "") {
+            try {
+                medalListFiltered = medalList.Where(x => x.Rank == (Rank)Enum.Parse(typeof(Rank), Filters.FilterText.ToLower(), true)).ToList();
+            }
+            catch { }
+        }
+        if (Filters.FilterColumn == MedalFilterColumns.Year && Filters.FilterText != "") {
+            if (int.TryParse(Filters.FilterText, out var year)) {
+                medalListFiltered = medalList.Where(x => x.Year == year).ToList();
+            }
+        }
+        if (Filters.FilterColumn == MedalFilterColumns.Sport && Filters.FilterText != "") {
+            medalListFiltered = medalList.Where(x => x.Sport != null && x.Sport!.ToLower().Contains(Filters.FilterText)).ToList();
+        }
+        if (Filters.FilterColumn == MedalFilterColumns.Competition && Filters.FilterText != "") {
+            medalListFiltered = medalList.Where(x => x.Competition != null && x.Competition!.ToLower().Contains(Filters.FilterText)).ToList();
+        }
+        if (Filters.FilterColumn == MedalFilterColumns.Name && Filters.FilterText != "") {
+            var result = new List<MedalData>();
+            foreach (var medal in medalList) {
+                foreach (var name in medal.Names) {
+                    if (name != null && name!.ToLower().Contains(Filters!.FilterText!.ToLower())) {
+                        result.Add(medal);
+                    }
+                }
+            }
+            medalListFiltered = result;
+        }
+
+        Filters.Loading = false;
+    }
+
+}

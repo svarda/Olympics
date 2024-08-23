@@ -1,0 +1,16 @@
+﻿@using Olympics.Web
+@inject IMedalFilters Filters
+
+@if (Column == Filters.SortColumn) {
+    <span>@SortSymbol</span>
+}
+else {
+    <span>&nbsp;</span>
+}
+
+@code {
+    [Parameter]
+    public MedalFilterColumns Column { get; set; }
+
+    private string SortSymbol => Filters.SortAscending ? "🔼" : "🔽";
+}
